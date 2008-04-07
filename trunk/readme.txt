@@ -20,15 +20,36 @@ To compile, open the terminal ("Qt 4.x.y Command Prompt" under
 Windows) and type:
 qmake -config release
 make
+Under Mac OS X, you can use the generated Xcode project to
+compile instead of make.
+
 In order to install SplitUI, do the following:
 Under Windows, copy the executable (splitui.exe located in the
 release directory) to the Qt bin directory, for example
 C:\Qt\4.3.0\bin
 Under Linux, copy the binary file (splitui) to /usr/bin. This
 will require root privileges.
+Under Mac OS X, copy the binary file (splitui) from inside the
+bundle (Contents/MacOS) to /usr/bin. This will require root
+privileges.
 
 Using
 ---------------------------------------------------------------
+To enable SplitUI, change directory to that of your source code
+and type:
+splitui -pro ProjectName.pro
+or
+splitui -pro ProjectName.pro -src SourceFolder
+if you store the source and ui files in a different folder.
+Please note that it is safe to distribute project files like
+this, because SplitUI will only be used if it is found in the
+specified locations.
+
+Manual setup (optional)
+---------------------------------------------------------------
+Alternatively, you can enable the use of SplitUI manually. This
+is useful if you don't want SplitUI to modify your project
+file.
 Imagine you have 2 ui files in your project:
 main_window.ui and about.ui
 To enable the use of SplitUI, add the following into your
@@ -54,3 +75,8 @@ ui_main_window.h and ui_about.h, run qmake and recompile.
 Please note that it is safe to distribute project files like
 this, because SplitUI will only be used if it is found in the
 specified locations.
+
+Licence
+---------------------------------------------------------------
+This programme is released under the terms of the GPL v2.
+For more information, see the gpl.txt file.
