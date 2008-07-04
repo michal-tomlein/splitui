@@ -1,7 +1,7 @@
 /******************************************************************************
  *                                   SplitUI                                  *
  * -------------------------------------------------------------------------- *
- * Version 0.2                                                                *
+ * Version 0.3                                                                *
  * -------------------------------------------------------------------------- *
  * A tool for converting a Qt UI file into a header and a cpp file.           *
  * -------------------------------------------------------------------------- *
@@ -24,15 +24,19 @@
 
 using namespace std;
 
-int split(QString file_name)
+int split(QString file_name, QString output = QString())
 {
-	QFileInfo ui_info(file_name);
+	QFileInfo ui_info(file_name); QString uih;
 	if (!ui_info.exists())
 		{ cout << "Invalid argument: " << QByteArray().append(file_name).constData() << endl; return -1; }
-	QStringList arguments; arguments << file_name << "-o" << QString("%1/ui_%2.h").arg(ui_info.absolutePath()).arg(ui_info.completeBaseName());
+	if (output.isEmpty()) {
+		uih = QString("%1/ui_%2.h").arg(ui_info.absolutePath()).arg(ui_info.completeBaseName());
+	} else {
+		uih = output;
+	}
+	QStringList arguments; arguments << file_name << "-o" << uih;
 	QProcess *uic = new QProcess;
 	if (uic->execute("uic", arguments) != 0) { cout << "Error" << endl; return -1; }
-	QString uih = QString("%1/ui_%2.h").arg(ui_info.absolutePath()).arg(ui_info.completeBaseName());
 	QFile src_file(uih);
 	if (!src_file.open(QFile::ReadOnly | QFile::Text))
 		{ cout << "Error opening file " << QByteArray().append(uih).constData() << endl; return -1; }
@@ -154,11 +158,11 @@ int main(int argc, char **argv)
 	QCoreApplication app(argc, argv);
 	
 	if (app.arguments().count() <= 1) {
-		cout << "Usage: splitui <class_name>.ui" << endl;
+		cout << "Usage: splitui <class_name>.ui [-o <output_file>]" << endl;
 		cout << "       splitui -pro <project_name>.pro [-src <folder>]" << endl;
 		return -1;
 	} else {
-		if (app.arguments().at(1) == "-pro")
+		if (app.arguments().at(1) == "-pro") {
 			if (app.arguments().contains("-src")) {
 				int i = 3;
 				do {
@@ -167,7 +171,13 @@ int main(int argc, char **argv)
 					i++;
 				} while (i < app.arguments().count());
 			} else return updateProjectFile(app.arguments().at(2));
-		return split(app.arguments().at(1));
+		} else {
+			if (app.arguments().count() > 3 && app.arguments().at(2) == "-o") {
+				return split(app.arguments().at(1), app.arguments().at(3));
+			} else {
+				return split(app.arguments().at(1));
+			}
+		}
 	}
 	
 	return 0;
