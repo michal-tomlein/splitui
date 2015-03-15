@@ -1,0 +1,1 @@
+SplitUI is a tool which extends the functionality of Qt's uic. It splits a compiled ui file (a header file) into a header file and a cpp file, which can save a lot of time, especially under Windows with MinGW.
